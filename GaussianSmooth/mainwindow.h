@@ -27,6 +27,10 @@ private slots:
 
     void on_actionGather_stats_triggered();
 
+    void on_actionWrite_Kernel_triggered();
+
+    void on_actionBlur_method_triggered();
+
 private:
     Ui::MainWindow *ui;
     ImgLoader loader;

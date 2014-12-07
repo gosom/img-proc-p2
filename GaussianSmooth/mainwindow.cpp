@@ -68,11 +68,11 @@ void MainWindow::on_actionSet_kernel_size_triggered(){
 void MainWindow::on_actionGather_stats_triggered(){
     QImage in = loader.GetImage();
     vector<tuple<int, int>> results;
-    for(int i=3; i<20 ; i+=2){
+    for(int i=3; i<15 ; i+=2){
         gauss.updateKsize(i, true);
         int k = 0;
         int s = 0;
-        while(k < 10){
+        while(k < 8){
             auto t0 = high_resolution_clock::now();
             gauss.blur(in);
             auto t1 = high_resolution_clock::now();
@@ -89,4 +89,24 @@ void MainWindow::on_actionGather_stats_triggered(){
             ofs << std::get<0>(v) << "\t" << std::get<1>(v) << "\n";
         }
     }
+}
+
+void MainWindow::on_actionWrite_Kernel_triggered(){
+    QString fname = QFileDialog::getSaveFileName(this, "Save kernel", "", "");
+    std::ofstream ofs(fname.toStdString());
+    if(ofs){
+        ofs << gauss.str_kernel() << "\n" << gauss.str_kernel1d();
+    }
+}
+
+void MainWindow::on_actionBlur_method_triggered(){
+    bool ok;
+    int value;
+    value = QInputDialog::getInt(this, "Blur method",
+                                 QString("select value:")
+                                 .arg(gauss.getType()),
+                                 gauss.getType(), 0, 2, 1, &ok);
+    if(ok)
+        gauss.setType(value);
+
 }

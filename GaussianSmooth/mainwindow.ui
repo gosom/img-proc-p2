@@ -97,9 +97,11 @@
    </attribute>
    <addaction name="actionLoad_Image"/>
    <addaction name="actionSet_kernel_size"/>
+   <addaction name="actionBlur_method"/>
    <addaction name="separator"/>
    <addaction name="actionProcess_Image"/>
    <addaction name="actionGather_stats"/>
+   <addaction name="actionWrite_Kernel"/>
   </widget>
   <action name="actionLoad_Image">
    <property name="text">
@@ -125,6 +127,16 @@
   <action name="actionGather_stats">
    <property name="text">
     <string>Gather stats</string>
+   </property>
+  </action>
+  <action name="actionWrite_Kernel">
+   <property name="text">
+    <string>Write Kernel</string>
+   </property>
+  </action>
+  <action name="actionBlur_method">
+   <property name="text">
+    <string>blur method</string>
    </property>
   </action>
  </widget>

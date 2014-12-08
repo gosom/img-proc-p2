@@ -95,7 +95,8 @@ void MainWindow::on_actionWrite_Kernel_triggered(){
     QString fname = QFileDialog::getSaveFileName(this, "Save kernel", "", "");
     std::ofstream ofs(fname.toStdString());
     if(ofs){
-        ofs << gauss.str_kernel() << "\n" << gauss.str_kernel1d();
+        ofs << gauss.str_kernel() << "\n" << gauss.str_kernel1d() << "\n";
+        //ofs << gauss.str_pkernel();
     }
 }
 

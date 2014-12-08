@@ -4,12 +4,47 @@
 //#include <string>
 //#include <fstream>
 #include <qimage.h>
+#include <fftw3.h>
+//#include <opencv2/opencv.hpp>
 
 
 double gauss(int x, int y, double sigma){
     double sigma_sqrt = sigma * sigma;
     double pow = exp(-( (x*x+y*y) / (2*sigma_sqrt) ));
     return (1.0/sqrt(2*M_PI*sigma_sqrt)) * pow;
+}
+
+void pad(double **src, double **dst, int ksize, int w, int h){
+    if(w == ksize && h == ksize){
+        for(int i=0; i<ksize; ++i){
+            for(int j=0; j<ksize; ++j)
+                dst[i][j] = src[i][j];
+        }
+    }else{
+        int top_bottom = h - ksize, right_left = w - ksize;
+        int top, bottom, left, right;
+        top = bottom = top_bottom / 2;
+        if(top_bottom % 2 != 0)
+            bottom += 1;
+        left = right = right_left/2;
+        if(right_left % 2 != 0)
+            right += 1;
+
+        int ki = 0;
+        for(int i=0; i<w; ++i){
+            int kj = 0;
+            for(int j=0; j<h; ++j){
+                if(j >= top && (h-j) > bottom && i >= left && (w-i) > right)
+                    dst[i][j] = src[ki][kj];
+                else
+                    dst[i][j] = 0.0;
+                if(j >= top)
+                    kj += 1;
+            }
+            if(i >= left && (w-i) >= right)
+                ki += 1;
+            }
+        }
 }
 
 
@@ -20,6 +55,46 @@ int reflect(int dim, int x)
     if(x >= dim)
         return 2 * dim - x - 1;
     return x;
+}
+
+
+QImage qfft(const QImage& input){
+    int w = input.width();
+    int h = input.height();
+
+    fftw_complex* in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*w*h);
+    fftw_complex* out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*w*h);
+    fftw_complex* outi = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*w*h);
+    fftw_plan plan, plan2;
+    plan = fftw_plan_dft_2d(w, h, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+    plan2 = fftw_plan_dft_2d(w, h, out, outi, FFTW_BACKWARD, FFTW_ESTIMATE);
+
+    for(int x = 0; x < w; x++){
+        for(int y = 0; y < h; y++){
+            QColor color(input.pixel(x, y));
+            in[y * w + x][0] = (double)color.red();
+            in[y * w + x][1] = 0.0;
+        }
+    }
+
+    fftw_execute(plan);
+    fftw_execute(plan2);
+
+    QImage output = QImage(w, h, input.format());
+    for(int x=0; x<w; ++x){
+        for(int y=0; y<h; ++y){
+            double v = (outi[y*w + x][0])/(w*h);
+            int val2 = (int) v;
+            output.setPixel(x, y, qRgb(val2, val2, val2));
+        }
+    }
+    fftw_destroy_plan(plan);
+    fftw_free(in);
+    fftw_free(out);
+
+    return output;
+
 }
 
 FGaussian::FGaussian(unsigned int _ksize){
@@ -46,7 +121,7 @@ void FGaussian::clean_kernel(){
     if(kernel != nullptr){
         for(int i=0; i<ksize; ++i)
             delete [] kernel[i];
-        delete kernel;
+        delete[] kernel;
     }
     if(kernel1d != nullptr)
         delete kernel1d;
@@ -59,7 +134,25 @@ QImage FGaussian::blur(const QImage& _in){
         out = gaussian_blur(_in);
     else if(type == Separated)
         out = sep_blur(_in);
+    else if(type == GaussFFT)
+        out = gaussian_fft(_in);
     return out;
+}
+
+QImage FGaussian::gaussian_fft(const QImage& _in){
+    if(_in.isNull())
+        return QImage();
+    int w = _in.width();
+    int h = _in.height();
+    double **pkernel;
+    pkernel = new double*[w];
+    for(int i=0; i<w; ++i)
+        pkernel[i] = new double[h];
+    pad(kernel, pkernel, ksize, w, h);
+
+    QImage ret = qfft(_in);
+    //QImage ret2 = qfft(ret, true);
+    return ret;
 }
 
 QImage FGaussian::gaussian_blur(const QImage& _in){
@@ -193,6 +286,7 @@ std::string FGaussian::str_kernel() const{
     s += "}";
     return s;
 }
+
 
 std::string FGaussian::str_kernel1d() const{
     std::string s = "{";

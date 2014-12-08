@@ -5,9 +5,10 @@
 #include "qcolor.h"
 #include <string>
 
-enum blurType { Gaussian, Separated };
+enum blurType { Gaussian, Separated, GaussFFT };
 
 double gauss(int x, int y, double sigma);
+void pad(double **src, double **dst, int ksize, int w, int h);
 
 class FGaussian
 {
@@ -24,6 +25,8 @@ public:
             type = Gaussian;
         else if(v == 1)
             type = Separated;
+        else if(v == 2)
+            type = GaussFFT;
     }
     int getType() const {return (int) type;}
 
@@ -39,6 +42,7 @@ private:
     void kernel1d_generator();
     QImage gaussian_blur(const QImage& _in);
     QImage sep_blur(const QImage& _in);
+    QImage gaussian_fft(const QImage& _in);
 };
 
 #endif // FGAUSSIAN_H

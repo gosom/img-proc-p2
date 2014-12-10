@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     imgloader.cpp \
-    fgaussian.cpp
+    fgaussian.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     imgloader.h \
-    fgaussian.h
+    fgaussian.h \
+    utils.h
 
 FORMS    += mainwindow.ui
 

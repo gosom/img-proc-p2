@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.2.2, 2014-12-09T00:39:06. -->
+<!-- Written by QtCreator 3.2.2, 2014-12-10T08:29:03. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{02cbe786-f755-41d5-9b83-22c9a939ffa2}</value>
+  <value type="QByteArray">{b4a08a5f-2f27-406a-bdeb-5eea07da198c}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -60,7 +60,7 @@
   <valuemap type="QVariantMap">
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Desktop</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{0137e8ee-efae-48c4-8413-74626ddd3b45}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{a793113a-b2eb-4ca4-96dc-63165a90468b}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
@@ -235,7 +235,7 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">GaussianSmooth</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">GaussianSmooth2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/giorgos/projects/img-proc-p2/GaussianSmooth/GaussianSmooth.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">GaussianSmooth.pro</value>

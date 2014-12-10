@@ -68,11 +68,11 @@ void MainWindow::on_actionSet_kernel_size_triggered(){
 void MainWindow::on_actionGather_stats_triggered(){
     QImage in = loader.GetImage();
     vector<tuple<int, int>> results;
-    for(int i=3; i<15 ; i+=2){
+    for(int i=3; i<50 ; i+=2){
         gauss.updateKsize(i, true);
         int k = 0;
         int s = 0;
-        while(k < 8){
+        while(k < 5){
             auto t0 = high_resolution_clock::now();
             gauss.blur(in);
             auto t1 = high_resolution_clock::now();
@@ -104,8 +104,7 @@ void MainWindow::on_actionBlur_method_triggered(){
     bool ok;
     int value;
     value = QInputDialog::getInt(this, "Blur method",
-                                 QString("select value:")
-                                 .arg(gauss.getType()),
+                                 QString("select value:"),
                                  gauss.getType(), 0, 2, 1, &ok);
     if(ok)
         gauss.setType(value);

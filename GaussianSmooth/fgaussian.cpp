@@ -51,32 +51,44 @@ QImage FGaussian::blur(const QImage& _in){
 QImage FGaussian::gaussian_fft(const QImage& _in){
     if(_in.isNull())
         return QImage();
-    int w = _in.width();
-    int h = _in.height();
+    QImage pimg = padded(_in, ksize);
+
+    int w = pimg.width();
+    int h = pimg.height();
+
     // create padded kernel
     double **pkernel;
     pkernel = new double*[w];
-    for(int i=0; i<w; ++i)
+    for(int i=0; i<w; ++i){
         pkernel[i] = new double[h];
-    pad(kernel, pkernel, ksize, w, h);
+    }
+    pad(kernel, pkernel, ksize, ksize, w, h);
+
     int N = w * h;
+
     // fft the kernel
     std::complex<double>* pkervel_cmp = new std::complex<double>[N];
-    array2_complex_array(pkernel, pkervel_cmp, w, h);
     std::complex<double>* kernel_fft = new std::complex<double>[N];
+    array2_complex_array(pkernel, pkervel_cmp, w, h);
+
     fft(pkervel_cmp, kernel_fft, w, h, false);
+
     // fft the image
     std::complex<double>* image_1d = new std::complex<double>[N];
-    img2_array1d(_in, image_1d);
     std::complex<double>* image_fft = new std::complex<double>[N];
+    img2_array1d(pimg, image_1d);
+
     fft(image_1d, image_fft, w, h, false);
-    // perform convolution
+
+    // do convolution
     std::complex<double>* convolved = new std::complex<double>[N];
     for(int i=0; i != N; ++i){
         convolved[i] = image_fft[i] * kernel_fft[i];
     }
     // inverse fft
     fft(convolved, image_1d, w, h, true);
+    fftshift(image_1d, w, h);
+
     QImage ret = array1d_2img(image_1d, w, h, _in.format());
     // clean up
     for(int i=0; i != w; ++i)
@@ -87,7 +99,7 @@ QImage FGaussian::gaussian_fft(const QImage& _in){
     delete image_1d;
     delete image_fft;
     delete convolved;
-    return ret;
+    return unpad(ret, ksize);
 }
 
 QImage FGaussian::gaussian_blur(const QImage& _in){
@@ -112,12 +124,6 @@ QImage FGaussian::gaussian_blur(const QImage& _in){
                     QColor color(_in.pixel(x1, y1));
                     double value = kernel[i+radius][j+radius];
                     d += color.red()*value;
-                    /* now using reflection since it is easier to understand
-                    if( (i+x)>=0 && (j+y) >=0 && (i+x) < w-1 && (j+y)<h-1){
-                        QColor color(_in.pixel(x+i, y+j));
-                        double value = kernel[i+radius][j+radius];
-                        d += color.red()*value;
-                    }*/
                 }
             }
             img.setPixel(x, y, qRgb(d, d, d));

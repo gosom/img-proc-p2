@@ -8,7 +8,8 @@
 enum blurType { Gaussian, Separated, GaussFFT };
 
 double gauss(int x, int y, double sigma);
-void pad(double **src, double **dst, int ksize, int w, int h);
+
+void pad(double **src, double **dst, int src_size, int w, int h);
 
 class FGaussian
 {

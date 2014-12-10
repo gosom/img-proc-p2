@@ -5,6 +5,23 @@
 #include <complex>
 #include <fftw3.h>
 
+void fftshift(std::complex<double> *a, int w, int h){
+    int m = h/2;
+    std::complex<double> tmp1;
+    for(int row=0; row!= w/2; ++row){
+        for(int column=0; column != h/2; ++column){
+            tmp1 = a[(row+m)*h+column + m];
+            a[(row+m)*h+column + m] = a[row*h + column];
+            a[row*h + column] = tmp1;
+
+            tmp1 = a[(row)*h+column + m];
+            a[(row)*h+column + m] = a[(row+m)*h + column];
+            a[(row+m)*h + column] = tmp1;
+        }
+    }
+}
+
+
 void array2_complex_array(double** src, std::complex<double>* dst, int w,
                           int h){
     for(int x = 0; x < w; x++){
@@ -64,14 +81,14 @@ double gauss(int x, int y, double sigma){
 }
 
 
-void pad(double **src, double **dst, int ksize, int w, int h){
-    if(w == ksize && h == ksize){
-        for(int i=0; i<ksize; ++i){
-            for(int j=0; j<ksize; ++j)
+void pad(double **src, double **dst, int sw, int sh, int w, int h){
+    if(w == sw && h == sh){
+        for(int i=0; i<sw; ++i){
+            for(int j=0; j<sh; ++j)
                 dst[i][j] = src[i][j];
         }
     }else{
-        int top_bottom = h - ksize, right_left = w - ksize;
+        int top_bottom = h - sh, right_left = w - sw;
         int top, bottom, left, right;
         top = bottom = top_bottom / 2;
         if(top_bottom % 2 != 0)
@@ -98,6 +115,71 @@ void pad(double **src, double **dst, int ksize, int w, int h){
 }
 
 
+QImage padded(const QImage& in, int ksize){
+    int padsize = ksize/2;
+    int w = in.width() + ksize -1;
+    int h = in.height() + ksize -1;
+    QImage img(w, h, in.format());
+    img.fill(0);
+    QColor c;
+    double v;
+    for(int x=0; x!=w; ++x){
+        for(int y=0; y!=h; ++y){
+            if(x >= padsize && x < (in.width() + padsize)
+               && y >= padsize && y < (in.height() + padsize)){
+                c = in.pixel(x-padsize, y-padsize);
+            }else{
+                if(x<padsize && y >= padsize && y < (in.height() + padsize)){
+                     c = in.pixel(0, y-padsize);
+                }else if(x>padsize && y >= padsize && y < (in.height() + padsize)){
+                    c = in.pixel(in.width()-1, y-padsize);
+                }
+                else if(y<padsize && x >= padsize && x < (in.width() + padsize)){
+                    c = in.pixel(x-padsize, 0);
+                }else if(y>padsize && x >= padsize && x < (in.width() + padsize)){
+                    c = in.pixel(x-padsize, in.height()-1);
+                }else if(x<padsize && y<padsize){
+                    c = in.pixel(0, 0);
+                }else if(x<padsize && y>padsize){
+                    c = in.pixel(0, in.height()-1);
+                }else if(x>padsize && y<padsize){
+                    c = in.pixel(in.width()-1, 0);
+                }else
+                    c = in.pixel(in.width()-1, in.height()-1);
+            }
+            v = c.red();
+            img.setPixel(x, y, qRgb(v, v, v));
+        }
+    }
+    return img;
+}
+
+QImage unpad(const QImage& in, int ksize){
+    int padsize = ksize/2;
+    int nw = in.width() - ksize + 1;
+    int nh = in.height() - ksize + 1;
+    double** ndata = new double*[nw];
+    for(int i=0; i<nw; ++i)
+        ndata[i] = new double[nh];
+    QImage img(nw, nh, in.format());
+    QColor c;
+    double v;
+    int coordx, coordy;
+    for(int x=0; x<in.width(); ++x){
+        for(int y=0; y<in.height(); ++y){
+            if(x>=padsize && x< (nw + padsize)
+               && y>=padsize && y < (nh+padsize)){
+                c = in.pixel(x, y);
+                v = c.red();
+                coordx = x - padsize;
+                coordy = y - padsize;
+                img.setPixel(coordx, coordy, qRgb(v, v, v));
+            }
+        }
+    }
+    return img;
+}
+
 int reflect(int dim, int x){
     if(x < 0)
         return -x - 1;
@@ -105,3 +187,5 @@ int reflect(int dim, int x){
         return 2 * dim - x - 1;
     return x;
 }
+
+

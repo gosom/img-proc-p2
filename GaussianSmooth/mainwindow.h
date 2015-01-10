@@ -5,8 +5,8 @@
 #include <qlabel.h>
 #include "imgloader.h"
 #include "fgaussian.h"
-
-
+#include "warpsettingsdialog.h"
+#include "imgwarp.h"
 namespace Ui {
 class MainWindow;
 }
@@ -31,12 +31,16 @@ private slots:
 
     void on_actionBlur_method_triggered();
 
+    void on_actionWrap_triggered();
+public slots:
+    void on_wrap_triggered(warpparams x, warpparams y);
 private:
     Ui::MainWindow *ui;
     ImgLoader loader;
     QLabel imgLabel;
     QLabel blurLabel;
     FGaussian gauss;
+    WarpSettingsDialog* settingsDialog;
 };
 
 #endif // MAINWINDOW_H

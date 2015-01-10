@@ -4,6 +4,49 @@
 #include <qcolor.h>
 #include <complex>
 #include <fftw3.h>
+#include <utility>
+
+std::pair<int, int> getransform1(int x, int y, double a1, double p1, double ph1,
+                                 double a2, double p2, double ph2){
+    int xnew = x;//round(x + a1 * sin(M_PI);
+    int ynew = round(y + a2 * cos(2.0 * M_PI * (x/p2) + ph2));
+    return std::make_pair(xnew, ynew);
+}
+
+QImage image_warp(const QImage& in){
+    double a1 = 0.0;
+    double p1 = 128.0;
+    double ph1 = 0.0;
+    double a2 = 64.0;
+    double p2 = 256.0;
+    double ph2 = 128.0;
+
+    int height = in.height();
+    int width = in.width();
+    QImage output = QImage(width, height, in.format());
+
+    double xo, yo;
+    QColor c;
+
+    for(int i=0; i<height; ++i){
+        for(int j=0; j<width; ++j){
+            auto new_coords = getransform1(i, j, a1, p1, ph1, a2, p2, ph2);
+            xo = new_coords.first;
+            yo = new_coords.second;
+            if(xo >= width || xo < 0 ||
+                    yo >= height || yo < 0)
+                c = QColor(0, 0, 0);
+            else
+                c = in.pixel(xo, yo);
+            int v = c.red();
+            if(v > 255)
+                int v = 255;
+            output.setPixel(i, j, qRgb(v, v, v));
+        }
+    }
+    return output;
+
+}
 
 void fftshift(std::complex<double> *a, int w, int h){
     int m = h/2;

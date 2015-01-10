@@ -3,12 +3,16 @@
 #include "imgloader.h"
 #include <qfiledialog.h>
 #include "qinputdialog.h"
+#include "utils.h"
+#include "imgwarp.h"
+#include "warpsettingsdialog.h"
 
 #include <chrono>
 #include <vector>
 #include <utility>
 #include <fstream>
 
+#include <QDebug>
 using namespace std::chrono;
 using std::vector;
 using std::tuple;
@@ -21,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     imgLabel.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     blurLabel.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    settingsDialog = new WarpSettingsDialog(this);
+
+
 }
 
 void MainWindow::on_actionLoad_Image_triggered(){
@@ -110,3 +117,21 @@ void MainWindow::on_actionBlur_method_triggered(){
         gauss.setType(value);
 
 }
+
+void MainWindow::on_actionWrap_triggered()
+{
+    settingsDialog->show();
+}
+
+void MainWindow::on_wrap_triggered(warpparams x, warpparams y){
+    qDebug() << "Do some warping" << x.amplitude;
+    QImage in = loader.GetImage();
+
+    ImgWarp wrapper(&in, x, y);
+    QImage out = wrapper.warp();
+
+    blurLabel.setPixmap(QPixmap::fromImage(out));
+    ui->scrollAreaBlur->setWidget(&blurLabel);
+
+}
+

@@ -3,6 +3,10 @@
 #include <complex>
 #include <qimage.h>
 
+QImage image_warp(const QImage& in);
+
+void fftshift(std::complex<double> *a, int w, int h);
+
 void array2_complex_array(double** src, std::complex<double>* dst, int w,
                           int h);
 
@@ -19,8 +23,13 @@ void fft(std::complex<double>* in, std::complex<double>* out, int w, int h,
 
 double gauss(int x, int y, double sigma);
 
-void pad(double **src, double **dst, int ksize, int w, int h);
+void pad(double **src, double **dst, int sw, int sh, int w, int h);
+
+QImage padded(const QImage& in, int ksize);
+
+QImage unpad(const QImage& in, int ksize);
 
 int reflect(int dim, int x);
+
 
 #endif // UTILS_H

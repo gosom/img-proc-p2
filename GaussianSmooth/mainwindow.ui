@@ -102,6 +102,7 @@
    <addaction name="actionProcess_Image"/>
    <addaction name="actionGather_stats"/>
    <addaction name="actionWrite_Kernel"/>
+   <addaction name="actionWrap"/>
   </widget>
   <action name="actionLoad_Image">
    <property name="text">
@@ -137,6 +138,11 @@
   <action name="actionBlur_method">
    <property name="text">
     <string>blur method</string>
+   </property>
+  </action>
+  <action name="actionWrap">
+   <property name="text">
+    <string>wrap</string>
    </property>
   </action>
  </widget>

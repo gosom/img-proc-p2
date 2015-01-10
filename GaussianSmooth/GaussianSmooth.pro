@@ -16,14 +16,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     imgloader.cpp \
     fgaussian.cpp \
-    utils.cpp
+    utils.cpp \
+    imgwarp.cpp \
+    warpsettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     imgloader.h \
     fgaussian.h \
-    utils.h
+    utils.h \
+    imgwarp.h \
+    warpsettingsdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    warpsettingsdialog.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 

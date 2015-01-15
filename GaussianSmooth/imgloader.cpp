@@ -1,7 +1,6 @@
 #include "imgloader.h"
-
 #include <qmessagebox.h>
-
+#include <opencv2/opencv.hpp>
 
 ImgLoader::ImgLoader(){
     pixelMap = new QPixmap;
@@ -14,6 +13,9 @@ ImgLoader::~ImgLoader(){
 }
 
 void ImgLoader::load(const QString& path){
+
+    matInput = cv::imread(path.toStdString(), CV_LOAD_IMAGE_GRAYSCALE);
+
     if(pixelMap->load(path))
         loaded = true;
     else{

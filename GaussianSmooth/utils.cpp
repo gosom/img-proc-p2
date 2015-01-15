@@ -5,47 +5,39 @@
 #include <complex>
 #include <fftw3.h>
 #include <utility>
+#include <opencv2/opencv.hpp>
+#include <qdebug.h>
 
-std::pair<int, int> getransform1(int x, int y, double a1, double p1, double ph1,
-                                 double a2, double p2, double ph2){
-    int xnew = x;//round(x + a1 * sin(M_PI);
-    int ynew = round(y + a2 * cos(2.0 * M_PI * (x/p2) + ph2));
-    return std::make_pair(xnew, ynew);
-}
-
-QImage image_warp(const QImage& in){
-    double a1 = 0.0;
-    double p1 = 128.0;
-    double ph1 = 0.0;
-    double a2 = 64.0;
-    double p2 = 256.0;
-    double ph2 = 128.0;
-
-    int height = in.height();
-    int width = in.width();
-    QImage output = QImage(width, height, in.format());
-
-    double xo, yo;
-    QColor c;
-
-    for(int i=0; i<height; ++i){
-        for(int j=0; j<width; ++j){
-            auto new_coords = getransform1(i, j, a1, p1, ph1, a2, p2, ph2);
-            xo = new_coords.first;
-            yo = new_coords.second;
-            if(xo >= width || xo < 0 ||
-                    yo >= height || yo < 0)
-                c = QColor(0, 0, 0);
-            else
-                c = in.pixel(xo, yo);
-            int v = c.red();
-            if(v > 255)
-                int v = 255;
-            output.setPixel(i, j, qRgb(v, v, v));
-        }
+//credits http://stackoverflow.com/questions/11543298/qt-opencv-displaying-images-on-qlabel
+QImage mat2qimage(cv::Mat const &mat)
+{
+    if(mat.type()==CV_8UC1)
+    {
+        // Set the color table (used to translate colour indexes to qRgb values)
+        QVector<QRgb> colorTable;
+        for (int i=0; i<256; i++)
+            colorTable.push_back(qRgb(i,i,i));
+        // Copy input Mat
+        const uchar *qImageBuffer = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage img(qImageBuffer, mat.cols, mat.rows, mat.step, QImage::Format_Indexed8);
+        img.setColorTable(colorTable);
+        return img;
     }
-    return output;
-
+    // 8-bits unsigned, NO. OF CHANNELS=3
+    if(mat.type()==CV_8UC3)
+    {
+        // Copy input Mat
+        const uchar *qImageBuffer = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage img(qImageBuffer, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        return img.rgbSwapped();
+    }
+    else
+    {
+        qDebug() << "ERROR: Mat could not be converted to QImage.";
+        return QImage();
+    }
 }
 
 void fftshift(std::complex<double> *a, int w, int h){

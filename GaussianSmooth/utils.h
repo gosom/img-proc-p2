@@ -2,8 +2,9 @@
 #define UTILS_H
 #include <complex>
 #include <qimage.h>
+#include <opencv2/opencv.hpp>
 
-QImage image_warp(const QImage& in);
+QImage mat2qimage(cv::Mat const &mat);
 
 void fftshift(std::complex<double> *a, int w, int h);
 

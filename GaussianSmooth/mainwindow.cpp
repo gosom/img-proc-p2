@@ -67,8 +67,10 @@ void MainWindow::on_actionSet_kernel_size_triggered(){
                                  QString("Current value: %1")
                                  .arg(gauss.getKernelSize()),
                                  gauss.getKernelSize(), 1, 100, 1, &ok);
-    if(ok)
+    if(ok){
         gauss.updateKsize(value, true);
+        recGauss.calculate_coefficients(value);
+    }
 
 }
 
@@ -134,4 +136,19 @@ void MainWindow::on_wrap_triggered(warpparams x, warpparams y){
     ui->scrollAreaBlur->setWidget(&blurLabel);
 
 }
+
+
+void MainWindow::on_actionRecursive_Blur_triggered()
+{
+    cv::Mat img = loader.GetOpenCvImage();
+    recGauss.setImg(img);
+
+    cv::Mat conv = recGauss.gaussian_conv();
+
+    QImage out = mat2qimage(conv);
+
+    blurLabel.setPixmap(QPixmap::fromImage(out));
+    ui->scrollAreaBlur->setWidget(&blurLabel);
+}
+
 

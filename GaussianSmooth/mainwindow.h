@@ -7,6 +7,8 @@
 #include "fgaussian.h"
 #include "warpsettingsdialog.h"
 #include "imgwarp.h"
+#include "recursivegaussian.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -32,6 +34,8 @@ private slots:
     void on_actionBlur_method_triggered();
 
     void on_actionWrap_triggered();
+    void on_actionRecursive_Blur_triggered();
+
 public slots:
     void on_wrap_triggered(warpparams x, warpparams y);
 private:
@@ -40,6 +44,7 @@ private:
     QLabel imgLabel;
     QLabel blurLabel;
     FGaussian gauss;
+    RecursiveGaussian recGauss;
     WarpSettingsDialog* settingsDialog;
 };
 

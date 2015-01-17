@@ -36,6 +36,8 @@ private slots:
     void on_actionWrap_triggered();
     void on_actionRecursive_Blur_triggered();
 
+    void on_actionBenchmarks_triggered();
+
 public slots:
     void on_wrap_triggered(warpparams x, warpparams y);
 private:

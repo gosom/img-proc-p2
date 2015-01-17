@@ -104,6 +104,7 @@
    <addaction name="actionWrite_Kernel"/>
    <addaction name="actionWrap"/>
    <addaction name="actionRecursive_Blur"/>
+   <addaction name="actionBenchmarks"/>
   </widget>
   <action name="actionLoad_Image">
    <property name="text">
@@ -149,6 +150,11 @@
   <action name="actionRecursive_Blur">
    <property name="text">
     <string>recursive Blur</string>
+   </property>
+  </action>
+  <action name="actionBenchmarks">
+   <property name="text">
+    <string>Benchmarks</string>
    </property>
   </action>
  </widget>

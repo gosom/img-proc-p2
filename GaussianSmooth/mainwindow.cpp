@@ -152,3 +152,45 @@ void MainWindow::on_actionRecursive_Blur_triggered()
 }
 
 
+
+void MainWindow::on_actionBenchmarks_triggered()
+{
+    qDebug() << "Running benchmarks";
+    QImage in = loader.GetImage();
+    cv::Mat img = loader.GetOpenCvImage();
+    recGauss.setImg(img);
+    vector<tuple<double, double, double>> results;
+    for(int i=3; i<50 ; i+=2){
+        recGauss.calculate_coefficients(i);
+        gauss.updateKsize(i, true);
+        int k = 0;
+        int sr = 0;
+        int sf = 0;
+        while(k < 100){
+            // recursive
+            auto t0 = high_resolution_clock::now();
+            recGauss.gaussian_conv();
+            auto t1 = high_resolution_clock::now();
+            sr += duration_cast<milliseconds>(t1 - t0).count();
+            //gauss
+            t0 = high_resolution_clock::now();
+            gauss.blur(in);
+            t1 = high_resolution_clock::now();
+            sf += duration_cast<milliseconds>(t1 - t0).count();
+            ++k;
+        }
+        double sigma = gauss.get_sigma();
+        tuple<double, double, double> tmp(sigma, sr / k, sf / k);
+        results.push_back(tmp);
+    }
+    QString fname = QFileDialog::getSaveFileName(this, "Save results", "", "");
+    std::ofstream ofs(fname.toStdString());
+    if(ofs){
+        for(auto v:results){
+            ofs << std::get<0>(v) << "\t" << std::get<1>(v) << "\t";
+            ofs << std::get<2>(v) << std::endl;
+        }
+    }
+
+
+}

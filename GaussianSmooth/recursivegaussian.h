@@ -29,6 +29,8 @@ public:
 
     void calculate_coefficients(int ksize);
 
+    num get_sigma(){return coeff.sigma;}
+
     cv::Mat gaussian_conv();
 private:
     coefficients coeff;

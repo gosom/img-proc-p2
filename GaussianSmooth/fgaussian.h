@@ -31,6 +31,8 @@ public:
     }
     int getType() const {return (int) type;}
 
+    double get_sigma(){return sigma;}
+
 private:
     blurType type;
     int ksize;

@@ -128,6 +128,7 @@ void RecursiveGaussian::apply_filter(cv::Mat &out){
 
         std::vector<num> causal;
         get_causal(tmp, causal);
+
         std::vector<num> acausal(width);
         get_acausal(tmp, acausal);
 

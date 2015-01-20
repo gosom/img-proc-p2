@@ -8,6 +8,7 @@
 #include "warpsettingsdialog.h"
 #include "imgwarp.h"
 #include "recursivegaussian.h"
+#include "anamorphosisdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,8 +39,12 @@ private slots:
 
     void on_actionBenchmarks_triggered();
 
+    void on_actionAnamorphosis_triggered();
+
 public slots:
     void on_wrap_triggered(warpparams x, warpparams y);
+    void on_anamorphosis_triggered(int rmin);
+
 private:
     Ui::MainWindow *ui;
     ImgLoader loader;
@@ -48,6 +53,7 @@ private:
     FGaussian gauss;
     RecursiveGaussian recGauss;
     WarpSettingsDialog* settingsDialog;
+    AnamorphosisDialog* settingsAnamorphosis;
 };
 
 #endif // MAINWINDOW_H

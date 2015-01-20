@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     utils.cpp \
     imgwarp.cpp \
     warpsettingsdialog.cpp \
-    recursivegaussian.cpp
+    recursivegaussian.cpp \
+    cylinderanamorphosis.cpp \
+    anamorphosisdialog.cpp
 
 HEADERS  += mainwindow.h \
     imgloader.h \
@@ -27,10 +29,13 @@ HEADERS  += mainwindow.h \
     utils.h \
     imgwarp.h \
     warpsettingsdialog.h \
-    recursivegaussian.h
+    recursivegaussian.h \
+    cylinderanamorphosis.h \
+    anamorphosisdialog.h
 
 FORMS    += mainwindow.ui \
-    warpsettingsdialog.ui
+    warpsettingsdialog.ui \
+    anamorphosisdialog.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 

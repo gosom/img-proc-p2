@@ -6,6 +6,8 @@
 #include "utils.h"
 #include "imgwarp.h"
 #include "warpsettingsdialog.h"
+#include "cylinderanamorphosis.h"
+#include "anamorphosisdialog.h"
 
 #include <chrono>
 #include <vector>
@@ -26,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     imgLabel.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     blurLabel.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
     settingsDialog = new WarpSettingsDialog(this);
-
+    settingsAnamorphosis = new AnamorphosisDialog(this);
 
 }
 
@@ -151,8 +153,6 @@ void MainWindow::on_actionRecursive_Blur_triggered()
     ui->scrollAreaBlur->setWidget(&blurLabel);
 }
 
-
-
 void MainWindow::on_actionBenchmarks_triggered()
 {
     qDebug() << "Running benchmarks";
@@ -193,4 +193,18 @@ void MainWindow::on_actionBenchmarks_triggered()
     }
 
 
+}
+
+void MainWindow::on_actionAnamorphosis_triggered()
+{
+    settingsAnamorphosis->show();
+}
+
+void MainWindow::on_anamorphosis_triggered(int rmin){
+    CylinderAnamorphosis ca(loader.GetImage(), rmin);
+
+    QImage out = ca.get_anamorphosis();
+
+    blurLabel.setPixmap(QPixmap::fromImage(out));
+    ui->scrollAreaBlur->setWidget(&blurLabel);
 }
